@@ -18,11 +18,6 @@ struct ContentView: View {
                     Label("Logs", systemImage: "book.fill")
                 }
             
-            AddCatchView()
-                .tabItem {
-                    Label("Add Catch", systemImage: "plus.circle.fill")
-                }
-            
             AchievementsView()
                 .tabItem {
                     Label("Achievements", systemImage: "trophy.fill")
