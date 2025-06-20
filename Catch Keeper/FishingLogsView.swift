@@ -10,7 +10,6 @@ struct FishingLogsView: View {
     
     @State private var selectedSortOption = 0
     @State private var selectedLog: FishingLog? = nil
-    @State private var isShowingDetail = false
     @State private var isShowingAddCatchView = false
     @State private var searchText = ""
     
@@ -48,14 +47,13 @@ struct FishingLogsView: View {
                 ScrollView {
                     LazyVStack(spacing: 16) {
                         ForEach(fishingLogs) { log in
-                            Button(action: {
-                                selectedLog = log
-                                isShowingDetail = true
-                            }) {
-                                FishingLogCard(log: log)
-                                    .padding(.horizontal)
-                            }
-                            .buttonStyle(PlainButtonStyle())
+                            FishingLogCard(log: log)
+                                .padding(.horizontal)
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    selectedLog = log
+                                    print("Selected log: \(log), species: \(log.fishSpecies ?? "nil")")
+                                }
                         }
                         .padding(.vertical)
                     }
@@ -82,10 +80,9 @@ struct FishingLogsView: View {
                 .sheet(isPresented: $isShowingAddCatchView) {
                     AddCatchView()
                 }
-                .fullScreenCover(isPresented: $isShowingDetail) {
-                    if let log = selectedLog {
-                        FishingLogDetailView(log: log)
-                    }
+                .fullScreenCover(item: $selectedLog) { log in
+                    let _ = print("Presenting detail view. log: \(log), species: \(log.fishSpecies ?? "nil")")
+                    FishingLogDetailView(log: log)
                 }
             }
         }
