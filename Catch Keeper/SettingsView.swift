@@ -3,16 +3,11 @@ import CoreData
 
 struct SettingsView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @AppStorage("useMetricSystem") private var useMetricSystem = false
     @AppStorage("syncWithiCloud") private var syncWithiCloud = true
     
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Units")) {
-                    Toggle("Use Metric System", isOn: $useMetricSystem)
-                }
-                
                 Section(header: Text("iCloud Sync")) {
                     Toggle("Sync with iCloud", isOn: $syncWithiCloud)
                     Text("Your fishing logs will be synced across all your devices")

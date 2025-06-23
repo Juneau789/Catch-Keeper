@@ -7,26 +7,34 @@
 
 import SwiftUI
 import CoreData
+import FirebaseFirestore
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) private var viewContext
+    @AppStorage("didOnboard") private var didOnboard = false
+    @AppStorage("isLoggedIn") private var isLoggedIn = false
     
     var body: some View {
+        if !isLoggedIn {
+            AuthView()
+        } else if !didOnboard {
+            OnboardingView(onFinish: {
+                didOnboard = true
+            })
+        } else {
+            MainAppView()
+        }
+    }
+}
+
+struct MainAppView: View {
+    var body: some View {
         TabView {
-            FishingLogsView()
-                .tabItem {
-                    Label("Logs", systemImage: "book.fill")
-                }
-            
-            AchievementsView()
-                .tabItem {
-                    Label("Achievements", systemImage: "trophy.fill")
-                }
-            
-            SettingsView()
-                .tabItem {
-                    Label("Settings", systemImage: "gear")
-                }
+            FeedView()
+                .tabItem { Label("Feed", systemImage: "house.fill") }
+            TournamentsView()
+                .tabItem { Label("Tournaments", systemImage: "trophy.fill") }
+            ProfileView()
+                .tabItem { Label("Profile", systemImage: "person.crop.circle") }
         }
     }
 }
@@ -34,6 +42,5 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

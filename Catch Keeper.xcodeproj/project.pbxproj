@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		11D8BB382E08DA7B000D9B18 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 11D8BB372E08DA7B000D9B18 /* FirebaseAnalytics */; };
+		11D8BB3A2E08DA7B000D9B18 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 11D8BB392E08DA7B000D9B18 /* FirebaseAuth */; };
+		11D8BB3C2E08DA7B000D9B18 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 11D8BB3B2E08DA7B000D9B18 /* FirebaseFirestore */; };
+		11D8BB3E2E08DA7B000D9B18 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 11D8BB3D2E08DA7B000D9B18 /* FirebaseStorage */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		114AD7A52DB73F72009DBD15 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +31,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		11326A9A2E08D57100B9A086 /* Catch Keeper.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "Catch Keeper.xcodeproj"; sourceTree = SOURCE_ROOT; };
 		114AD7952DB73F71009DBD15 /* Catch Keeper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Catch Keeper.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		114AD7A42DB73F72009DBD15 /* Catch KeeperTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Catch KeeperTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		114AD7AE2DB73F72009DBD15 /* Catch KeeperUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Catch KeeperUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -52,6 +60,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11D8BB382E08DA7B000D9B18 /* FirebaseAnalytics in Frameworks */,
+				11D8BB3E2E08DA7B000D9B18 /* FirebaseStorage in Frameworks */,
+				11D8BB3A2E08DA7B000D9B18 /* FirebaseAuth in Frameworks */,
+				11D8BB3C2E08DA7B000D9B18 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,6 +87,7 @@
 		114AD78C2DB73F71009DBD15 = {
 			isa = PBXGroup;
 			children = (
+				11326A9A2E08D57100B9A086 /* Catch Keeper.xcodeproj */,
 				114AD7972DB73F71009DBD15 /* Catch Keeper */,
 				114AD7A72DB73F72009DBD15 /* Catch KeeperTests */,
 				114AD7B12DB73F72009DBD15 /* Catch KeeperUITests */,
@@ -89,6 +102,11 @@
 				114AD7A42DB73F72009DBD15 /* Catch KeeperTests.xctest */,
 				114AD7AE2DB73F72009DBD15 /* Catch KeeperUITests.xctest */,
 			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		11D8BB322E08D70A000D9B18 /* Products */ = {
+			isa = PBXGroup;
 			name = Products;
 			sourceTree = "<group>";
 		};
@@ -112,6 +130,10 @@
 			);
 			name = "Catch Keeper";
 			packageProductDependencies = (
+				11D8BB372E08DA7B000D9B18 /* FirebaseAnalytics */,
+				11D8BB392E08DA7B000D9B18 /* FirebaseAuth */,
+				11D8BB3B2E08DA7B000D9B18 /* FirebaseFirestore */,
+				11D8BB3D2E08DA7B000D9B18 /* FirebaseStorage */,
 			);
 			productName = "Catch Keeper";
 			productReference = 114AD7952DB73F71009DBD15 /* Catch Keeper.app */;
@@ -195,9 +217,18 @@
 			);
 			mainGroup = 114AD78C2DB73F71009DBD15;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				11D8BB362E08DA7B000D9B18 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 114AD7962DB73F71009DBD15 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 11D8BB322E08D70A000D9B18 /* Products */;
+					ProjectRef = 11326A9A2E08D57100B9A086 /* Catch Keeper.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				114AD7942DB73F71009DBD15 /* Catch Keeper */,
@@ -558,6 +589,40 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		11D8BB362E08DA7B000D9B18 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.14.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		11D8BB372E08DA7B000D9B18 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 11D8BB362E08DA7B000D9B18 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		11D8BB392E08DA7B000D9B18 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 11D8BB362E08DA7B000D9B18 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		11D8BB3B2E08DA7B000D9B18 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 11D8BB362E08DA7B000D9B18 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		11D8BB3D2E08DA7B000D9B18 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 11D8BB362E08DA7B000D9B18 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 114AD78D2DB73F71009DBD15 /* Project object */;
 }

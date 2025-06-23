@@ -11,18 +11,28 @@ struct FishingLogsView: View {
     @State private var selectedSortOption = 0
     @State private var selectedLog: FishingLog? = nil
     @State private var isShowingAddCatchView = false
-    @State private var searchText = ""
     
     let sortOptions = ["Date", "Species", "Weight"]
+    
+    private var sortedLogs: [FishingLog] {
+        let logs = Array(fishingLogs)
+        switch selectedSortOption {
+        case 0: // Date (newest to oldest)
+            return logs.sorted { ($0.catchDate ?? Date()) > ($1.catchDate ?? Date()) }
+        case 1: // Species (A-Z)
+            return logs.sorted { ($0.fishSpecies ?? "") < ($1.fishSpecies ?? "") }
+        case 2: // Weight (heaviest to lightest)
+            return logs.sorted { $0.fishWeight > $1.fishWeight }
+        default:
+            return logs
+        }
+    }
     
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                // Search and Sort Controls
+                // Only Sort Controls
                 VStack(spacing: 12) {
-                    SearchBar(text: $searchText)
-                        .padding(.horizontal)
-                    
                     Picker("Sort by", selection: $selectedSortOption) {
                         ForEach(0..<sortOptions.count, id: \.self) { index in
                             Text(sortOptions[index]).tag(index)
@@ -46,7 +56,7 @@ struct FishingLogsView: View {
                 // Logs List
                 ScrollView {
                     LazyVStack(spacing: 16) {
-                        ForEach(fishingLogs) { log in
+                        ForEach(sortedLogs) { log in
                             FishingLogCard(log: log)
                                 .padding(.horizontal)
                                 .contentShape(Rectangle())
@@ -88,39 +98,8 @@ struct FishingLogsView: View {
         }
     }
     
-    struct SearchBar: View {
-        @Binding var text: String
-        
-        var body: some View {
-            HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundColor(.white.opacity(0.7))
-                
-                TextField("Search logs", text: $text)
-                    .textFieldStyle(PlainTextFieldStyle())
-                    .foregroundColor(.white)
-                    .placeholder(when: text.isEmpty) {
-                        Text("Search logs")
-                            .foregroundColor(.white.opacity(0.7))
-                    }
-                
-                if !text.isEmpty {
-                    Button(action: {
-                        text = ""
-                    }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.white.opacity(0.7))
-                    }
-                }
-            }
-            .padding(8)
-            .background(Color.white.opacity(0.2))
-            .cornerRadius(10)
-        }
-    }
-    
     struct FishingLogCard: View {
-        let log: FishingLog
+        @ObservedObject var log: FishingLog
         
         var body: some View {
             VStack(alignment: .leading, spacing: 0) {
@@ -195,24 +174,52 @@ struct FishingLogsView: View {
         }
     }
     
-}
-    extension View {
-        func placeholder<Content: View>(
-            when shouldShow: Bool,
-            alignment: Alignment = .leading,
-            @ViewBuilder placeholder: () -> Content
-        ) -> some View {
-            ZStack(alignment: alignment) {
-                placeholder().opacity(shouldShow ? 1 : 0)
-                self
+    struct FishingLogGridCard: View {
+        @ObservedObject var log: FishingLog
+        var body: some View {
+            ZStack(alignment: .bottomLeading) {
+                if let photoData = log.photoData, let uiImage = UIImage(data: photoData) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: nil, height: nil)
+                        .aspectRatio(1, contentMode: .fit)
+                        .clipped()
+                } else {
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.2))
+                        .aspectRatio(1, contentMode: .fit)
+                        .overlay(
+                            Image(systemName: "photo")
+                                .font(.system(size: 32))
+                                .foregroundColor(.gray)
+                        )
+                }
+                // Overlay with species and date
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(log.fishSpecies ?? "Unknown")
+                        .font(.caption2).bold().foregroundColor(.white)
+                        .shadow(radius: 2)
+                    Text(log.catchDate ?? Date(), style: .date)
+                        .font(.caption2).foregroundColor(.white.opacity(0.8))
+                        .shadow(radius: 2)
+                }
+                .padding(6)
+                .background(Color.black.opacity(0.35))
+                .cornerRadius(8)
+                .padding(6)
             }
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .shadow(color: Color.black.opacity(0.08), radius: 2, x: 0, y: 1)
         }
     }
     
-    struct FishingLogsView_Previews: PreviewProvider {
-        static var previews: some View {
-            FishingLogsView()
-                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-        }
+}
+
+struct FishingLogsView_Previews: PreviewProvider {
+    static var previews: some View {
+        FishingLogsView()
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
+}
 

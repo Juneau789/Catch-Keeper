@@ -10,7 +10,7 @@ import CoreData
 
 struct FishingLogDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    let log: FishingLog
+    @ObservedObject var log: FishingLog
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     
@@ -24,133 +24,152 @@ struct FishingLogDetailView: View {
             Color.clear.onAppear { dismiss() }
         } else {
             ZStack {
-                (colorScheme == .dark ? Color.black : Color.white)
-                    .ignoresSafeArea()
+                // Blue gradient background
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color(red: 0.1, green: 0.3, blue: 0.5),
+                        Color(red: 0.2, green: 0.4, blue: 0.6)
+                    ]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .ignoresSafeArea()
                 
                 VStack(spacing: 0) {
-                    // Top bar with close, edit, and delete
-                    HStack {
-                        Button(action: { dismiss() }) {
-                            Image(systemName: "chevron.left")
-                                .font(.title)
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(Color.black.opacity(0.5))
-                                .clipShape(Circle())
-                        }
-                        Spacer()
-                        Button(action: { isPresentingEdit = true }) {
-                            Image(systemName: "pencil")
-                                .font(.title2)
-                                .foregroundColor(.white)
-                                .padding(8)
-                                .background(Color.blue.opacity(0.7))
-                                .clipShape(Circle())
-                        }
-                        Button(action: { isPresentingDeleteAlert = true }) {
-                            Image(systemName: "trash")
-                                .font(.title2)
-                                .foregroundColor(.white)
-                                .padding(8)
-                                .background(Color.red.opacity(0.7))
-                                .clipShape(Circle())
-                        }
-                    }
-                    .padding(.horizontal)
-                    .padding(.top, 16)
-                    
-                    ScrollView {
+                    GeometryReader { geometry in
                         VStack(spacing: 0) {
-                            // Photo section
-                            if let photoData = log.photoData,
-                               let uiImage = UIImage(data: photoData) {
-                                Image(uiImage: uiImage)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(maxWidth: .infinity)
-                                    .cornerRadius(16)
-                                    .padding(.top, 16)
-                                    .padding(.horizontal)
-                            } else {
-                                Rectangle()
-                                    .fill(Color.gray.opacity(0.2))
-                                    .frame(height: 200)
-                                    .cornerRadius(16)
-                                    .overlay(
-                                        Image(systemName: "photo")
-                                            .font(.system(size: 50))
-                                            .foregroundColor(.gray)
-                                    )
-                                    .padding(.top, 16)
-                                    .padding(.horizontal)
+                            // Top bar with close, edit, and delete
+                            HStack {
+                                Button(action: { dismiss() }) {
+                                    Image(systemName: "chevron.left")
+                                        .font(.title)
+                                        .foregroundColor(.white)
+                                        .padding()
+                                        .background(Color.black.opacity(0.5))
+                                        .clipShape(Circle())
+                                }
+                                Spacer()
+                                Button(action: { isPresentingEdit = true }) {
+                                    Image(systemName: "pencil")
+                                        .font(.title2)
+                                        .foregroundColor(.white)
+                                        .padding(8)
+                                        .background(Color.blue.opacity(0.7))
+                                        .clipShape(Circle())
+                                }
+                                Button(action: { isPresentingDeleteAlert = true }) {
+                                    Image(systemName: "trash")
+                                        .font(.title2)
+                                        .foregroundColor(.white)
+                                        .padding(8)
+                                        .background(Color.red.opacity(0.7))
+                                        .clipShape(Circle())
+                                }
                             }
+                            .padding(.horizontal)
+                            .padding(.top, geometry.safeAreaInsets.top + 8)
+                            .background(Color.clear)
                             
-                            // Details section
-                            VStack(alignment: .leading, spacing: 20) {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text(log.fishSpecies ?? "Unknown Species")
-                                        .font(.system(size: 32, weight: .bold))
-                                    Text(log.catchDate ?? Date(), style: .date)
-                                        .font(.title3)
-                                        .foregroundColor(.secondary)
-                                }
-                                .padding(.top, 20)
-                                
-                                HStack(spacing: 30) {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Weight")
-                                            .font(.subheadline)
-                                            .foregroundColor(.secondary)
-                                        Text("\(String(format: "%.2f", log.fishWeight)) lbs")
-                                            .font(.title2)
-                                            .bold()
+                            ScrollView {
+                                VStack(spacing: 0) {
+                                    // Photo section
+                                    if let photoData = log.photoData,
+                                       let uiImage = UIImage(data: photoData) {
+                                        Image(uiImage: uiImage)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(maxWidth: .infinity)
+                                            .cornerRadius(16)
+                                            .padding(.top, 16)
+                                            .padding(.horizontal)
+                                    } else {
+                                        Rectangle()
+                                            .fill(Color.gray.opacity(0.2))
+                                            .frame(height: 200)
+                                            .cornerRadius(16)
+                                            .overlay(
+                                                Image(systemName: "photo")
+                                                    .font(.system(size: 50))
+                                                    .foregroundColor(.gray)
+                                            )
+                                            .padding(.top, 16)
+                                            .padding(.horizontal)
                                     }
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Length")
-                                            .font(.subheadline)
-                                            .foregroundColor(.secondary)
-                                        Text("\(String(format: "%.2f", log.fishLength)) in")
-                                            .font(.title2)
-                                            .bold()
+                                    
+                                    // Details section
+                                    VStack(alignment: .leading, spacing: 20) {
+                                        VStack(alignment: .leading, spacing: 8) {
+                                            Text(log.fishSpecies ?? "Unknown Species")
+                                                .font(.system(size: 32, weight: .bold))
+                                                .foregroundColor(.white)
+                                            Text(log.catchDate ?? Date(), style: .date)
+                                                .font(.title3)
+                                                .foregroundColor(.white.opacity(0.8))
+                                        }
+                                        .padding(.top, 20)
+                                        
+                                        HStack(spacing: 30) {
+                                            VStack(alignment: .leading, spacing: 4) {
+                                                Text("Weight")
+                                                    .font(.subheadline)
+                                                    .foregroundColor(.white.opacity(0.8))
+                                                Text("\(String(format: "%.2f", log.fishWeight)) lbs")
+                                                    .font(.title2)
+                                                    .bold()
+                                                    .foregroundColor(.white)
+                                            }
+                                            VStack(alignment: .leading, spacing: 4) {
+                                                Text("Length")
+                                                    .font(.subheadline)
+                                                    .foregroundColor(.white.opacity(0.8))
+                                                Text("\(String(format: "%.2f", log.fishLength)) in")
+                                                    .font(.title2)
+                                                    .bold()
+                                                    .foregroundColor(.white)
+                                            }
+                                        }
+                                        .padding(.vertical, 10)
+                                        
+                                        if let location = log.locationName, !location.isEmpty {
+                                            VStack(alignment: .leading, spacing: 4) {
+                                                Text("Location")
+                                                    .font(.subheadline)
+                                                    .foregroundColor(.white.opacity(0.8))
+                                                Text(location)
+                                                    .font(.title3)
+                                                    .foregroundColor(.white)
+                                            }
+                                        }
+                                        if let rod = log.rodUsed, !rod.isEmpty {
+                                            VStack(alignment: .leading, spacing: 4) {
+                                                Text("Gear Used")
+                                                    .font(.subheadline)
+                                                    .foregroundColor(.white.opacity(0.8))
+                                                Text("\(rod) with \(log.reelUsed ?? "")")
+                                                    .font(.title3)
+                                                    .foregroundColor(.white)
+                                            }
+                                        }
+                                        if let bait = log.baitUsed, !bait.isEmpty {
+                                            VStack(alignment: .leading, spacing: 4) {
+                                                Text("Bait Used")
+                                                    .font(.subheadline)
+                                                    .foregroundColor(.white.opacity(0.8))
+                                                Text(bait)
+                                                    .font(.title3)
+                                                    .foregroundColor(.white)
+                                            }
+                                        }
                                     }
+                                    .padding()
                                 }
-                                .padding(.vertical, 10)
-                                
-                                if let location = log.locationName, !location.isEmpty {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Location")
-                                            .font(.subheadline)
-                                            .foregroundColor(.secondary)
-                                        Text(location)
-                                            .font(.title3)
-                                    }
-                                }
-                                if let rod = log.rodUsed, !rod.isEmpty {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Gear Used")
-                                            .font(.subheadline)
-                                            .foregroundColor(.secondary)
-                                        Text("\(rod) with \(log.reelUsed ?? "")")
-                                            .font(.title3)
-                                    }
-                                }
-                                if let bait = log.baitUsed, !bait.isEmpty {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Bait Used")
-                                            .font(.subheadline)
-                                            .foregroundColor(.secondary)
-                                        Text(bait)
-                                            .font(.title3)
-                                    }
-                                }
+                                .padding(.bottom, 32)
                             }
-                            .padding()
                         }
-                        .padding(.bottom, 32)
+                        .edgesIgnoringSafeArea(.top)
                     }
                 }
-                .ignoresSafeArea(edges: .top)
-                .background((colorScheme == .dark ? Color.black : Color.white))
+                .background(Color.clear)
                 .cornerRadius(0)
                 .sheet(isPresented: $isPresentingEdit) {
                     EditCatchView(log: log) { updatedLog in
